@@ -1,0 +1,68 @@
+# Test your FastAPI endpoints
+
+POST http://127.0.0.1:8000/authserver/authenticate
+Content-Type: application/json
+
+{
+  "username": "12345@qq.com",
+  "password": "123456",
+  "clientToken": null,
+  "requestUser": true,
+  "agent": {
+    "name": "Minecraft",
+    "version": 1
+  }
+}
+
+###
+POST http://127.0.0.1:8000/authserver/refresh
+Content-Type: application/json
+
+{
+  "accessToken": "acctoken",
+  "clientToken": null,
+  "requestUser": true,
+  "selectedProfile": {}
+}
+
+###
+POST http://127.0.0.1:8000/authserver/refresh
+Content-Type: application/json
+
+{
+  "accessToken": "acctoken",
+  "requestUser": true,
+  "selectedProfile": {
+    "id": "00000000-0000-0000-0000-000000000000",
+    "name": "faq"
+  }
+}
+
+###
+POST http://127.0.0.1:8000/authserver/validate
+Content-Type: application/json
+
+{
+  "accessToken": "acctoken",
+  "clientToken": null
+}
+
+###
+POST http://127.0.0.1:8000/authserver/invalidate
+Content-Type: application/json
+
+{
+  "accessToken": "acctoken"
+}
+
+###
+POST http://127.0.0.1:8000/authserver/signout
+Content-Type: application/json
+
+{
+  "username": "Ciallo~",
+  "password": "meowmeow"
+}
+
+###
+
