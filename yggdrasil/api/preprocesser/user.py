@@ -7,7 +7,7 @@ from typing import Any, Optional
 from fastapi.responses import Response
 from pydantic import BaseModel
 
-from proto.exceptions import InvalidCredentials, InvalidToken
+from yggdrasil.proto.exceptions import InvalidCredentials, InvalidToken
 from yggdrasil.api.apphandler.user import handler
 from yggdrasil.proto.handlers.user import UserApiResponse
 from yggdrasil.proto.profiles import GameProfile

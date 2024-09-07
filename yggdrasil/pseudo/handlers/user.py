@@ -2,6 +2,7 @@
 from typing import override
 from uuid import uuid4
 
+from yggdrasil.api.flow import request
 from yggdrasil.proto.handlers.user import AbstractUserApiHandler, UserApiResponse
 from yggdrasil.proto.profiles import GameProfile
 from yggdrasil.proto.typealias import AccessToken, ClientToken, UserLoginName
@@ -40,7 +41,6 @@ class PseudoUserApiHandler(AbstractUserApiHandler):
     @override
     async def invalidate(self, accessToken: AccessToken) -> None:
         """占位"""
-        ...
 
     @override
     async def logout(self, username: UserLoginName, password: str) -> bool:

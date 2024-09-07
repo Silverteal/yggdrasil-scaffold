@@ -7,11 +7,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.12"
-fastapi = "~0.112.2"
+fastapi = "~0.114.0"
 uvicorn = "~0.30.6"
 pycryptodome = "~3.20.0"
-pydantic = "~2.8.2"
+pydantic = "~2.9.0"
 starlette = "~0.38.2"
+werkzeug = "~3.0.4"
 
 
 [build-system]

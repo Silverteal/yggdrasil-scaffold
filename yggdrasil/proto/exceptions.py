@@ -34,7 +34,7 @@ class YggdrasilException(HTTPException):
         super().__init__(status_code)
 
 
-class _ForbiddenOperationException(YggdrasilException):
+class ForbiddenOperationException(YggdrasilException):
     """适用于以下场景：
     令牌无效；
     密码错误，或短时间内多次登录失败而被暂时禁止登录；
@@ -51,7 +51,7 @@ class _ForbiddenOperationException(YggdrasilException):
         super().__init__(403, "ForbiddenOperationException", message, cause)
 
 
-class _IllegalArgumentException(YggdrasilException):
+class IllegalArgumentException(YggdrasilException):
     """适用于以下场景：
     试图向一个已经绑定了角色的令牌指定其要绑定的角色。
     """
@@ -67,10 +67,10 @@ class _IllegalArgumentException(YggdrasilException):
         super().__init__(400, "IllegalArgumentException", message, cause)
 
 
-InvalidToken = _ForbiddenOperationException("Invalid token.")
-InvalidCredentials = _ForbiddenOperationException("Invalid credentials. Invalid username or password.")
-AlreadyBound = _IllegalArgumentException("Access token already has a profile assigned.")
-InvalidOwnership = _ForbiddenOperationException("Trying to bind a game profile without appropriate ownership.")
+InvalidToken = ForbiddenOperationException("Invalid token.")
+InvalidCredentials = ForbiddenOperationException("Invalid credentials. Invalid username or password.")
+AlreadyBound = IllegalArgumentException("Access token already has a profile assigned.")
+InvalidOwnership = ForbiddenOperationException("Trying to bind a game profile without appropriate ownership.")
 
 
 def yggdrasil_error_response(status_code: int,
