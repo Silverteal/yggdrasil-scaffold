@@ -1,12 +1,20 @@
 # coding=utf-8
 
-__all__ = ["YggdrasilException", "InvalidToken", "InvalidCredentials", "InvalidOwnership", "AlreadyBound"]
+__all__ = ["DirectResponseWrapper", "YggdrasilException", "InvalidToken", "InvalidCredentials", "InvalidOwnership",
+           "AlreadyBound"]
 
 from collections.abc import Mapping
 from typing import Optional
 
 from fastapi import HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
+
+
+class DirectResponseWrapper(Exception):
+    """用于绕过 preprocessor 和所有应用依赖（ALI等）直接返回响应。很丑陋但似乎能用。"""
+
+    def __init__(self, response: Response):
+        self.response = response
 
 
 class YggdrasilException(HTTPException):
@@ -28,10 +36,10 @@ class YggdrasilException(HTTPException):
         :param errorMessage: 响应的 ``errorMessage`` 字段，错误的详细信息（人类可读），规范的表格中对应 Error Message 列
         :param cause: 响应的 ``cause`` 字段，错误的原因（可选）。规范中定义为“一般不包含”
         """
+        self.status_code = status_code
         self.error = error
         self.errorMessage = errorMessage
         self.cause = cause
-        super().__init__(status_code)
 
 
 class ForbiddenOperationException(YggdrasilException):

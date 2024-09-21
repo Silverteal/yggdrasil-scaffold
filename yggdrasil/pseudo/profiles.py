@@ -33,3 +33,7 @@ def pseudo_texture() -> TextureProfile:
     return TextureProfile(SKIN=TextureProperty(TextureUrl("https://hostname/sha1"),
                                                {"model": choice(("default", "slim"))}),
                           CAPE=TextureProperty(TextureUrl("https://hostname/sha1")))
+
+
+if __name__ == "__main__":
+    print(pseudo_game_profile().serialize("unsigned"))

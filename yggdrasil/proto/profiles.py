@@ -141,7 +141,7 @@ class GameProfile:
     @classmethod
     def deserialize(cls, src: SerializedProfile) -> Self:
         """导入游戏角色档案为需要的格式。
-        >>> from yggdrasil.util.pseudo import pseudo_game_profile
+        >>> from yggdrasil.pseudo.profiles import pseudo_game_profile
         >>> a = pseudo_game_profile().serialize("unsigned")
         >>> a
         >>> b = GameProfile.deserialize(a)

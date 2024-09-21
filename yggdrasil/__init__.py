@@ -1,4 +1,4 @@
 # coding=utf-8
-from yggdrasil.api.server import app
+from yggdrasil.endpoints import app
 
 app = app

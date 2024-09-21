@@ -1,58 +1,31 @@
 # coding=utf-8
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
-from pydantic import field_serializer
-
-from yggdrasil.proto.handlers import AppResponse
-from yggdrasil.proto.profiles import GameProfile, UserProfile
-from yggdrasil.proto.typealias import AccessToken, ClientToken, SerializedProfile, UserLoginName
-
-
-class UserApiResponse(AppResponse):
-    accessToken: AccessToken
-    clientToken: ClientToken
-    availableProfiles: Optional[list[GameProfile]] = None
-    selectedProfile: Optional[GameProfile] = None
-    user: Optional[UserProfile] = None
-
-    @field_serializer("availableProfiles", when_used="unless-none")
-    def _export_ap(self, ap: Optional[list[GameProfile]]) -> list[SerializedProfile]:
-        return [i.serialize("minimum") for i in ap]
-
-    @field_serializer("selectedProfile", when_used="unless-none")
-    def _export_sp(self, sp: Optional[GameProfile]) -> SerializedProfile:
-        return sp.serialize("minimum")
-
-    @field_serializer("user", when_used="unless-none")
-    def _export_usr(self, usr: UserProfile) -> SerializedProfile:
-        return usr.serialize()
+from yggdrasil.proto.adapters.user import *
 
 
 class AbstractUserApiHandler(ABC):
     """用户 API Handler"""
 
     @abstractmethod
-    async def login(self, username: UserLoginName, password: str, clientToken: ClientToken | None,
-                    requestUser: bool) -> UserApiResponse | None:
+    async def login(self, form: LoginRequest) -> UserApiResponse | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def refresh(self, accessToken: AccessToken, clientToken: ClientToken | None,
-                      requestUser: bool, selectedProfile: GameProfile | None) -> UserApiResponse:
+    async def refresh(self, form: RefreshRequest) -> UserApiResponse:
         raise NotImplementedError
 
     @abstractmethod
-    async def validate(self, accessToken: AccessToken, clientToken: ClientToken | None) -> bool:
+    async def validate(self, form: ValidationsRequest) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    async def invalidate(self, accessToken: AccessToken) -> None:
+    async def invalidate(self, form: ValidationsRequest) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def logout(self, username: UserLoginName, password: str) -> bool:
+    async def logout(self, form: LogoutRequest) -> bool:
         raise NotImplementedError
 
 
