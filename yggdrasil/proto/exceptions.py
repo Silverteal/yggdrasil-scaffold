@@ -27,8 +27,8 @@ class YggdrasilException(HTTPException):
             self,
             status_code: int,
             error: str,
-            errorMessage: str | None = None,
-            cause: str | None = None,
+            errorMessage: Optional[str] = None,
+            cause: Optional[str] = None,
     ) -> None:
         """
         :param status_code: 响应的状态码，规范的表格中对应 HTTP 状态码 列

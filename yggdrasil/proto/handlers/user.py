@@ -2,30 +2,30 @@
 
 from abc import ABC, abstractmethod
 
-from yggdrasil.proto.adapters.user import *
+from yggdrasil.proto.interfaces.user import *
 
 
 class AbstractUserApiHandler(ABC):
     """用户 API Handler"""
 
     @abstractmethod
-    async def login(self, form: LoginRequest) -> UserApiResponse | None:
+    async def login(self, *, form: LoginRequest) -> UserApiResponse | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def refresh(self, form: RefreshRequest) -> UserApiResponse:
+    async def refresh(self, *, form: RefreshRequest) -> UserApiResponse:
         raise NotImplementedError
 
     @abstractmethod
-    async def validate(self, form: ValidationsRequest) -> bool:
+    async def validate(self, *, form: ValidationsRequest) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    async def invalidate(self, form: ValidationsRequest) -> None:
+    async def invalidate(self, *, form: ValidationsRequest) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def logout(self, form: LogoutRequest) -> bool:
+    async def logout(self, *, form: LogoutRequest) -> bool:
         raise NotImplementedError
 
 

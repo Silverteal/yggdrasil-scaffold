@@ -28,7 +28,7 @@ class RefreshRequest(BaseModel):
     selectedProfile: Annotated[
         Optional[SerializedProfile],
         GameProfile | None
-    ] = None  # 一个Trick：实际handler读取到的是GameProfile | None。很可惜客户端代码可能因此无法通过类型检查，但我想不到更方便的写法了
+    ] = None  # 一个Trick：实际handler读取到的是GameProfile | None。TODO：客户端代码可能因此无法通过类型检查。
 
     @field_validator("selectedProfile")
     @classmethod

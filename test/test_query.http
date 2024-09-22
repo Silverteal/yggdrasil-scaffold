@@ -1,0 +1,18 @@
+# Test your FastAPI endpoints
+GET http://127.0.0.1:8000/sessionserver/session/minecraft/profile/00000000-0000-0000-0000-000000000000?unsigned=false
+
+###
+GET http://127.0.0.1:8000/sessionserver/session/minecraft/profile/00000000-0000-0000-0000-000000000000
+
+###
+POST http://127.0.0.1:8000/api/profiles/minecraft
+Content-Type: application/json
+
+[
+  "player1111",
+  "player1233",
+  "player1678"
+]
+
+###
+

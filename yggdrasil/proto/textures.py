@@ -23,7 +23,7 @@ class TextureProperty:
 
         """
         self.url: TextureUrl
-        self.metadata: Optional[dict[str, str]]
+        self.metadata: dict[str, str] | None
 
         self.url = url
         self.metadata = dict(metadata) if metadata is not None else None

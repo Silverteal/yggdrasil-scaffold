@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Response
 
 from yggdrasil.apphandlers.user import handler
-from yggdrasil.proto.adapters.user import LoginRequest, RefreshRequest, UserApiResponse
+from yggdrasil.proto.interfaces.user import LoginRequest, RefreshRequest, UserApiResponse
 from yggdrasil.proto.exceptions import InvalidCredentials, InvalidToken
 
 userapis = APIRouter(prefix="/authserver")
@@ -13,7 +13,7 @@ userapis = APIRouter(prefix="/authserver")
 @userapis.post("/authenticate", response_model=UserApiResponse, response_model_exclude_none=True)
 async def login(form: LoginRequest,
                 result: Annotated[UserApiResponse, Depends(handler.login)]
-                ) -> UserApiResponse | Response:
+                ) -> UserApiResponse:
     """处理登录逻辑。TODO：在此预先处理速率限制"""
     # 验证和执行请求和返回与规范的一致性 TODO：使用 pydantic
     # 如果客户端没有请求用户，则将用户条目剥离
@@ -35,7 +35,7 @@ async def login(form: LoginRequest,
 @userapis.post("/refresh", response_model=UserApiResponse, response_model_exclude_none=True)
 async def refresh(form: RefreshRequest,
                   result: Annotated[UserApiResponse, Depends(handler.refresh)]
-                  ) -> UserApiResponse | Response:
+                  ) -> UserApiResponse:
     """处理刷新逻辑"""
     # 验证和执行请求和返回与规范的一致性 TODO：使用 pydantic
     # 如果客户端没有请求用户，则将用户条目剥离

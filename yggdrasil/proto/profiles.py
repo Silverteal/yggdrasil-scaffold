@@ -111,7 +111,7 @@ class GameProfile:
         # 有时候脑残写的东西将不得不写完
         self.id: GameId
         self.name: GameName
-        self.texture: TextureProfile | None
+        self.texture: Optional[TextureProfile]
         self.extra_properties: ProfileProperties
 
         params: dict[str, Any] = {"id": None, "texture": None, "extra_properties": {}}

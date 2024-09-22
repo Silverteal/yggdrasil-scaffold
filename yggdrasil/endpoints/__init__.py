@@ -3,6 +3,7 @@
 __all__ = ["userapis"]
 
 from http import HTTPStatus
+from itertools import chain
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.encoders import jsonable_encoder
@@ -11,16 +12,19 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.utils import is_body_allowed_for_status_code
 from starlette.exceptions import HTTPException
 
-from yggdrasil.runtime import common_flow_service
+from yggdrasil.endpoints.profile import profileapis
+from yggdrasil.endpoints.query import queryapis
+from yggdrasil.endpoints.root import rootapi
 from yggdrasil.endpoints.session import sessionapis
 from yggdrasil.endpoints.user import userapis
 from yggdrasil.proto.exceptions import DirectResponseWrapper, YggdrasilException, yggdrasil_error_response
+from yggdrasil.runtime import common_flow_service
 
 app = FastAPI(dependencies=[Depends(common_flow_service)])
 
 
 @app.exception_handler(DirectResponseWrapper)
-async def not_implemented_adapter(req: Request, exc: DirectResponseWrapper):
+async def direct_response_adapter(req: Request, exc: DirectResponseWrapper):
     """直接返回响应体"""
     return exc.response
 
@@ -30,7 +34,7 @@ async def not_implemented_adapter(req: Request, exc: NotImplementedError):
     """处理未实现异常"""
     return yggdrasil_error_response(status_code=501,
                                     error="NotImplementedError",
-                                    errorMessage="The endpoint you have requested is not implemented."
+                                    errorMessage="The endpoint you have requested is not implemented.",
                                     )
 
 
@@ -40,7 +44,8 @@ async def request_validation_error_adapter(req: Request, exc: RequestValidationE
     return yggdrasil_error_response(status_code=422,
                                     error="RequestValidationError",
                                     errorMessage="The request has incorrect parameters and can't be processed.",
-                                    cause=jsonable_encoder(exc.errors()))
+                                    cause=jsonable_encoder(exc.errors()),
+                                    )
 
 
 @app.exception_handler(YggdrasilException)
@@ -51,7 +56,8 @@ async def yggdrasil_exception_handler(req: Request, exc: YggdrasilException):
     return yggdrasil_error_response(exc.status_code,
                                     exc.error,
                                     exc.errorMessage,
-                                    jsonable_encoder(exc.cause))
+                                    jsonable_encoder(exc.cause)
+                                    )
 
 
 @app.exception_handler(HTTPException)
@@ -70,12 +76,14 @@ async def http_exception_adapter(req: Request, exc: HTTPException):
                )
         if stc.is_success or stc.is_redirection:
             phr = "NotError"
-    desc = f"HTTP Status: {stc} {stc.phrase}; {stc.description}"
+    desc = f"{stc} {stc.phrase}; {stc.description}"
+    cause = exc.detail if exc.detail != stc.phrase else None
     return yggdrasil_error_response(exc.status_code,
                                     phr,
                                     desc,
-                                    exc.detail,
-                                    exc.headers)
+                                    cause,
+                                    exc.headers
+                                    )
 
 
 @app.exception_handler(Exception)
@@ -89,3 +97,6 @@ async def exception_adapter(req: Request, exc: Exception):
 
 app.include_router(userapis)
 app.include_router(sessionapis)
+app.include_router(queryapis)
+app.include_router(profileapis)
+app.include_router(rootapi)
