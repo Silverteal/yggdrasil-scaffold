@@ -88,7 +88,7 @@ def yggdrasil_error_response(status_code: int,
                              headers: Optional[Mapping[str, str]] = None
                              ) -> JSONResponse:
     """
-    根据给定参数生成异常。
+    根据给定参数生成异常响应。
     :param status_code: 响应的状态码
     :param error: 响应的 ``error`` 字段
     :param errorMessage: 响应的 ``errorMessage`` 字段

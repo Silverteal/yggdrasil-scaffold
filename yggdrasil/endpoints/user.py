@@ -1,18 +1,18 @@
 # coding=utf-8
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends
 
-from yggdrasil.apphandlers.user import handler
+from yggdrasil.app import handlers
 from yggdrasil.proto.interfaces.user import LoginRequest, RefreshRequest, UserApiResponse
-from yggdrasil.proto.exceptions import InvalidCredentials, InvalidToken
+from yggdrasil.exceptions import InvalidCredentials, InvalidToken
 
-userapis = APIRouter(prefix="/authserver")
+user_apis = APIRouter(prefix="/authserver")
 
 
-@userapis.post("/authenticate", response_model=UserApiResponse, response_model_exclude_none=True)
+@user_apis.post("/authenticate", response_model=UserApiResponse, response_model_exclude_none=True)
 async def login(form: LoginRequest,
-                result: Annotated[UserApiResponse, Depends(handler.login)]
+                result: Annotated[UserApiResponse, Depends(handlers.user.login)]
                 ) -> UserApiResponse:
     """处理登录逻辑。TODO：在此预先处理速率限制"""
     # 验证和执行请求和返回与规范的一致性 TODO：使用 pydantic
@@ -32,9 +32,9 @@ async def login(form: LoginRequest,
         raise InvalidCredentials
 
 
-@userapis.post("/refresh", response_model=UserApiResponse, response_model_exclude_none=True)
+@user_apis.post("/refresh", response_model=UserApiResponse, response_model_exclude_none=True)
 async def refresh(form: RefreshRequest,
-                  result: Annotated[UserApiResponse, Depends(handler.refresh)]
+                  result: Annotated[UserApiResponse, Depends(handlers.user.refresh)]
                   ) -> UserApiResponse:
     """处理刷新逻辑"""
     # 验证和执行请求和返回与规范的一致性 TODO：使用 pydantic
@@ -52,25 +52,21 @@ async def refresh(form: RefreshRequest,
     return result  # TODO：文档中写明返回值定义
 
 
-@userapis.post("/validate")
-async def validate(result: Annotated[bool, Depends(handler.validate)]) -> Response:
+@user_apis.post("/validate", status_code=204)
+async def validate(result: Annotated[bool, Depends(handlers.user.validate)]) -> None:
     """处理验证令牌有效性逻辑"""
-    if result:
-        return Response(status_code=204)
-    else:
+    if not result:
         raise InvalidToken
 
 
-@userapis.post("/invalidate", dependencies=[Depends(handler.invalidate)])
-async def invalidate() -> Response:
+@user_apis.post("/invalidate", dependencies=[Depends(handlers.user.invalidate)], status_code=204)
+async def invalidate() -> None:
     """处理吊销令牌逻辑"""
-    return Response(status_code=204)
+    # 由于不需要返回值，所以此处什么都不用做
 
 
-@userapis.post("/signout")
-async def logout(result: Annotated[bool, Depends(handler.logout)]) -> Response:
+@user_apis.post("/signout", status_code=204)
+async def logout(result: Annotated[bool, Depends(handlers.user.logout)]) -> None:
     """处理登出逻辑。TODO：在此预先处理速率限制"""
-    if result:
-        return Response(status_code=204)
-    else:
+    if not result:
         raise InvalidCredentials

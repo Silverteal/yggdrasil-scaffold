@@ -1,4 +1,4 @@
 # coding=utf-8
-from yggdrasil.endpoints import app
+__all__ = ["fastapi_instance"]
 
-app = app
+from yggdrasil.endpoints import fastapi_instance

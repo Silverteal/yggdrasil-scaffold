@@ -2,12 +2,14 @@
 """用户档案和游戏档案"""
 from collections.abc import Iterable, Mapping
 from typing import Any, Literal, Optional, Self, overload
+from uuid import UUID
 
 from Crypto.PublicKey.RSA import RsaKey
 
+from yggdrasil.proto.statictypes import GameId, GameName, ProfileProperties, SerializedProfile, UserId
 from yggdrasil.proto.textures import TextureProfile
-from yggdrasil.proto.typealias import GameId, GameName, ProfileProperties, SerializedProfile, UserId
-from yggdrasil.util import offline_uuid, sign_property, uuid_to_str
+from yggdrasil.utils.uuid import offline_uuid, uuid_to_str
+from yggdrasil.utils.signing import sign_property
 
 
 class UserProfile:
@@ -109,6 +111,7 @@ class GameProfile:
     def __init__(self, *args, **kwargs):
         # 此处文档刻意缺省了一个实现细节：当 ``id`` 为假值（一般即 None）时，会根据 ``name`` 生成一个离线模式 UUID。
         # 有时候脑残写的东西将不得不写完
+        # 此处必有 Bug
         self.id: GameId
         self.name: GameName
         self.texture: Optional[TextureProfile]
@@ -128,7 +131,13 @@ class GameProfile:
         if l >= 1:
             params["id"] = args[0]
 
-        self.id = GameId(params["id"]) if params["id"] else offline_uuid(GameName(params["name"]))
+        if params['id']:
+            if isinstance(params["id"], str):  # 有值的文本
+                params["id"] = UUID(params["id"])
+            self.id = GameId(params["id"])
+        else:  # 空值或者没有值
+            self.id = offline_uuid(GameName(params["name"]))
+
         self.name = GameName(params["name"])
         self.texture = params["texture"]
 

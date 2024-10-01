@@ -9,7 +9,7 @@ from pydantic import BaseModel, field_serializer, field_validator
 
 from yggdrasil.proto import LoosenBaseModel
 from yggdrasil.proto.profiles import GameProfile, UserProfile
-from yggdrasil.proto.typealias import AccessToken, ClientToken, SerializedProfile, UserLoginName
+from yggdrasil.proto.statictypes import AccessToken, ClientToken, SerializedProfile, UserLoginName
 
 
 class LoginRequest(BaseModel):

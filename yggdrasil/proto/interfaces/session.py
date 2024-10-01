@@ -4,11 +4,11 @@ __all__ = ["JoinRequest"]
 
 from pydantic import BaseModel
 
-from yggdrasil.proto.typealias import AccessToken, GameId
+from yggdrasil.proto.statictypes import AccessToken, GameId
 
 
 class JoinRequest(BaseModel):
-    """标准类型的会话请求表单，是Request Model的一部分"""
+    """标准类型的会话请求表单"""
     accessToken: AccessToken
     selectedProfile: GameId  # 输入是 str，输出是 GameId
     serverId: str

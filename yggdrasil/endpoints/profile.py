@@ -1,20 +1,19 @@
 # coding=utf-8
 
-from fastapi import APIRouter, Depends
-from fastapi.responses import Response
+from fastapi import APIRouter, Depends, Response
 
-from yggdrasil.apphandlers.profile import handler
+from yggdrasil.app import handlers
 
-profileapis = APIRouter(prefix="/api/user/profile")
+profile_apis = APIRouter(prefix="/api/user/profile")
 
 
-@profileapis.put("/{uuid}/{textureType}", dependencies=[Depends(handler.upload)])
-async def upload() -> Response:
+@profile_apis.put("/{uuid}/{textureType}", dependencies=[Depends(handlers.profile.upload)], status_code=204)
+async def upload() -> None:
     """处理材质上传逻辑。TODO：拒绝不正确的content_type"""
-    return Response(status_code=204)
+    # 由于不需要返回值，所以此处什么都不用做
 
 
-@profileapis.delete("/{uuid}/{textureType}", dependencies=[Depends(handler.remove)])
+@profile_apis.delete("/{uuid}/{textureType}", dependencies=[Depends(handlers.profile.remove)], status_code=204)
 async def remove() -> Response:
     """处理材质删除逻辑"""
-    return Response(status_code=204)
+    # 由于不需要返回值，所以此处什么都不用做

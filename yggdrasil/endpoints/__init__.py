@@ -1,35 +1,33 @@
 # coding=utf-8
 
-__all__ = ["userapis"]
+__all__ = ["fastapi_instance"]
 
 from http import HTTPStatus
-from itertools import chain
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.exceptions import RequestValidationError
 from fastapi.utils import is_body_allowed_for_status_code
 from starlette.exceptions import HTTPException
 
-from yggdrasil.endpoints.profile import profileapis
-from yggdrasil.endpoints.query import queryapis
-from yggdrasil.endpoints.root import rootapi
-from yggdrasil.endpoints.session import sessionapis
-from yggdrasil.endpoints.user import userapis
-from yggdrasil.proto.exceptions import DirectResponseWrapper, YggdrasilException, yggdrasil_error_response
-from yggdrasil.runtime import common_flow_service
+from yggdrasil.endpoints.profile import profile_apis
+from yggdrasil.endpoints.query import query_apis
+from yggdrasil.endpoints.root import root_api
+from yggdrasil.endpoints.session import session_apis
+from yggdrasil.endpoints.user import user_apis
+from yggdrasil.exceptions import DirectResponseWrapper, YggdrasilException, yggdrasil_error_response
 
-app = FastAPI(dependencies=[Depends(common_flow_service)])
+fastapi_instance = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 
-@app.exception_handler(DirectResponseWrapper)
+@fastapi_instance.exception_handler(DirectResponseWrapper)
 async def direct_response_adapter(req: Request, exc: DirectResponseWrapper):
     """直接返回响应体"""
     return exc.response
 
 
-@app.exception_handler(NotImplementedError)
+@fastapi_instance.exception_handler(NotImplementedError)
 async def not_implemented_adapter(req: Request, exc: NotImplementedError):
     """处理未实现异常"""
     return yggdrasil_error_response(status_code=501,
@@ -38,7 +36,7 @@ async def not_implemented_adapter(req: Request, exc: NotImplementedError):
                                     )
 
 
-@app.exception_handler(RequestValidationError)
+@fastapi_instance.exception_handler(RequestValidationError)
 async def request_validation_error_adapter(req: Request, exc: RequestValidationError):
     """处理和转录请求格式错误异常为标准格式"""
     return yggdrasil_error_response(status_code=422,
@@ -48,7 +46,7 @@ async def request_validation_error_adapter(req: Request, exc: RequestValidationE
                                     )
 
 
-@app.exception_handler(YggdrasilException)
+@fastapi_instance.exception_handler(YggdrasilException)
 async def yggdrasil_exception_handler(req: Request, exc: YggdrasilException):
     """处理业务异常"""
     if not is_body_allowed_for_status_code(exc.status_code):
@@ -60,7 +58,7 @@ async def yggdrasil_exception_handler(req: Request, exc: YggdrasilException):
                                     )
 
 
-@app.exception_handler(HTTPException)
+@fastapi_instance.exception_handler(HTTPException)
 async def http_exception_adapter(req: Request, exc: HTTPException):
     """处理和转录非业务异常为标准格式"""
     if not is_body_allowed_for_status_code(exc.status_code):
@@ -86,7 +84,7 @@ async def http_exception_adapter(req: Request, exc: HTTPException):
                                     )
 
 
-@app.exception_handler(Exception)
+@fastapi_instance.exception_handler(Exception)
 async def exception_adapter(req: Request, exc: Exception):
     """一般运行时错误的处理"""
     return yggdrasil_error_response(500,
@@ -95,8 +93,8 @@ async def exception_adapter(req: Request, exc: Exception):
                                     )
 
 
-app.include_router(userapis)
-app.include_router(sessionapis)
-app.include_router(queryapis)
-app.include_router(profileapis)
-app.include_router(rootapi)
+fastapi_instance.include_router(user_apis)
+fastapi_instance.include_router(session_apis)
+fastapi_instance.include_router(query_apis)
+fastapi_instance.include_router(profile_apis)
+fastapi_instance.include_router(root_api)

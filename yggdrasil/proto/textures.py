@@ -6,8 +6,8 @@ from collections.abc import Mapping
 from time import time_ns
 from typing import Optional, Self, overload
 
-from yggdrasil.proto.typealias import GameId, GameName, TextureUrl
-from yggdrasil.util import uuid_to_str
+from yggdrasil.proto.statictypes import GameId, GameName, TextureUrl
+from yggdrasil.utils.uuid import uuid_to_str
 
 
 class TextureProperty:

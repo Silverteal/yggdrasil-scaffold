@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Optional
 
 from fastapi import Depends, Form, Header, UploadFile
 
-from yggdrasil.proto.typealias import AccessToken
+from yggdrasil.proto.statictypes import AccessToken
 
 
 async def get_token(authorization: Annotated[Optional[str], Header()] = None) -> AccessToken | None:

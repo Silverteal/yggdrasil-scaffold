@@ -1,23 +1,24 @@
 # coding=utf-8
 from typing import Annotated
 
+from Crypto.PublicKey.RSA import RsaKey
 from fastapi import APIRouter, Depends, Response
-from fastapi.responses import JSONResponse
 
-from yggdrasil.apphandlers.session import handler
-from yggdrasil.runtime import config
+from yggdrasil.app import handlers
 from yggdrasil.proto.profiles import GameProfile
+from yggdrasil.proto.profiles import SerializedProfile
 
-sessionapis = APIRouter(prefix="/sessionserver/session/minecraft")
+session_apis = APIRouter(prefix="/sessionserver/session/minecraft")
 
 
-@sessionapis.post("/join", dependencies=[Depends(handler.join)])
+@session_apis.post("/join", dependencies=[Depends(handlers.session.join)], status_code=204)
 async def join() -> Response:
     """处理玩家侧正版验证逻辑"""
-    return Response(status_code=204)
+    # 由于不需要返回值，所以此处什么都不用做
 
 
-@sessionapis.get("/hasJoined")
-async def has_joined(game_profile: Annotated[GameProfile, Depends(handler.has_joined)]) -> JSONResponse:
+@session_apis.get("/hasJoined")
+async def has_joined(game_profile: Annotated[GameProfile, Depends(handlers.session.has_joined)],
+                     sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)]) -> SerializedProfile:
     """处理服务侧正版验证逻辑"""
-    return JSONResponse(game_profile.serialize("full", config.sign_key))
+    return game_profile.serialize("full", sign_key)

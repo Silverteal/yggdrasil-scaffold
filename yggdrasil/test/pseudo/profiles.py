@@ -4,8 +4,8 @@ from uuid import uuid4
 
 from yggdrasil.proto.profiles import GameProfile, UserProfile
 from yggdrasil.proto.textures import TextureProfile, TextureProperty
-from yggdrasil.proto.typealias import GameName, TextureUrl, UserId
-from yggdrasil.util import offline_uuid
+from yggdrasil.proto.statictypes import GameName, TextureUrl, UserId
+from yggdrasil.utils.uuid import offline_uuid
 
 
 def pseudo_user_profile() -> UserProfile:

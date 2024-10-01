@@ -1,23 +1,21 @@
 # coding=utf-8
-from typing import Annotated
+from typing import Annotated, Any
 
+from Crypto.PublicKey.RSA import RsaKey
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
 
-from yggdrasil.apphandlers.root import handler
+from yggdrasil.app import handlers
 from yggdrasil.proto.interfaces.root import MetaData
-from yggdrasil.runtime import config
 
-rootapi = APIRouter()
+root_api = APIRouter()
 
 
-@rootapi.get("/")
-async def home(metadata: Annotated[MetaData, Depends(handler.home)]) -> JSONResponse:
+@root_api.get("/")
+async def home(metadata: Annotated[MetaData, Depends(handlers.root.home)],
+               sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)]) -> dict[str, Any]:
     """处理主页面源数据清单"""
-    result = jsonable_encoder(metadata)
-    result["signaturePublickey"] = config.sign_key.public_key().export_key().decode()
-    return JSONResponse(result)
+    return jsonable_encoder(metadata) | {"signaturePublickey": sign_key.public_key().export_key().decode()}
 
 
 if __name__ == "__main__":
