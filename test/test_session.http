@@ -1,0 +1,28 @@
+# Test your FastAPI endpoints
+POST http://127.0.0.1:8000/sessionserver/session/minecraft/join
+Content-Type: application/json
+
+{
+  "accessToken": "114514",
+  "selectedProfile": "fake",
+  "serverId": "6015743"
+}
+
+###
+POST http://127.0.0.1:8000/sessionserver/session/minecraft/join
+Content-Type: application/json
+
+{
+  "accessToken": "114514",
+  "selectedProfile": "00000000-0000-0000-0000-000000000000",
+  "serverId": "6015743"
+}
+
+###
+GET http://127.0.0.1:8000/sessionserver/session/minecraft/hasJoined?username=1&serverId=k2&ip=3
+
+###
+GET http://127.0.0.1:8000/sessionserver/session/minecraft/hasJoined?username=1&serverId=k2
+
+###
+
