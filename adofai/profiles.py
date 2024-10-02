@@ -1,19 +1,21 @@
 # coding=utf-8
-"""用户档案和游戏档案"""
+"""用户档案和玩家档案数据类
+TODO：继承 pydantic
+"""
 from collections.abc import Iterable, Mapping
 from typing import Any, Literal, Optional, Self, overload
 from uuid import UUID
 
 from Crypto.PublicKey.RSA import RsaKey
 
-from yggdrasil.proto.statictypes import GameId, GameName, ProfileProperties, SerializedProfile, UserId
-from yggdrasil.proto.textures import TextureProfile
-from yggdrasil.utils.uuid import offline_uuid, uuid_to_str
-from yggdrasil.utils.signing import sign_property
+from adofai import GameId, GameName, UserId, ProfileProperties, SerializedProfile
+from adofai.textures import TextureProfile
+from adofai.utils.uuid import offline_uuid, uuid_to_str
+from adofai.utils.signing import sign_property
 
 
 class UserProfile:
-    """Yggdrasil 用户的档案"""
+    """用户档案数据类"""
 
     @overload
     def __init__(self, id: UserId | str) -> None:
@@ -72,7 +74,7 @@ class UserProfile:
 
 
 class GameProfile:
-    """游戏内玩家档案"""
+    """游戏内玩家档案数据类"""
 
     @overload
     def __init__(self, id: GameId | str, name: GameName | str, *, texture: Optional[TextureProfile] = None) -> None:
@@ -150,7 +152,7 @@ class GameProfile:
     @classmethod
     def deserialize(cls, src: SerializedProfile) -> Self:
         """导入游戏角色档案为需要的格式。
-        >>> from yggdrasil.pseudo.profiles import pseudo_game_profile
+        >>> from yggdrasil.test.pseudo.profiles import pseudo_game_profile
         >>> a = pseudo_game_profile().serialize("unsigned")
         >>> a
         >>> b = GameProfile.deserialize(a)
@@ -214,7 +216,7 @@ class GameProfile:
             return structure
 
         for token in structure["properties"]:
-            # TODO：迭代出的是否是引用？赋值是否有效？
+            # 迭代出的是否是引用？赋值是否有效？
             token["signature"] = sign_property(token["value"], key)
 
         return structure

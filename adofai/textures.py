@@ -1,13 +1,13 @@
 # coding=utf-8
-"""材质信息"""
+"""材质信息数据类"""
 import json
 from base64 import b64decode, b64encode
 from collections.abc import Mapping
 from time import time_ns
 from typing import Optional, Self, overload
 
-from yggdrasil.proto.statictypes import GameId, GameName, TextureUrl
-from yggdrasil.utils.uuid import uuid_to_str
+from adofai import GameId, GameName, TextureUrl
+from adofai.utils.uuid import uuid_to_str
 
 
 class TextureProperty:
@@ -31,7 +31,7 @@ class TextureProperty:
 
 class TextureProfile:
     """
-    材质档案
+    材质档案 TODO：在文档中写明：元数据的字段名会自动转为小写，而序列化时会自动转为大写
 
     和直觉不同，此类只包含整个材质序列化格式中的 ``textures`` 字段，只在导出时组合其他字段。
 
@@ -40,10 +40,10 @@ class TextureProfile:
 
     @overload
     def __init__(self, **kwargs: TextureProperty) -> None:
-        """通过 属性名-TextureProperty 键值对生成材质档案
+        """通过 属性名-TextureProperty 的命名参数生成材质档案
 
-        例：TextureProfile(SKIN=TextureProperty(TextureUrl("https://textures.host/texturehash"), {"model": "slim"}),
-                          CAPE=TextureProperty(TextureUrl("https://textures.host/anothertexturehash")))
+        例：TextureProfile(skin=TextureProperty(TextureUrl("https://textures.host/texturehash"), {"model": "slim"}),
+                          cape=TextureProperty(TextureUrl("https://textures.host/anothertexturehash")))
         :param kwargs: 关键字参数名称对应材质名称，参数值为 TextureProperty，对应该材质的内容。
         """
 
@@ -68,12 +68,12 @@ class TextureProfile:
         self.textures: dict[str, TextureProperty]
 
         if kwargs:
-            self.textures = kwargs
+            self.textures = {k.lower(): v for k, v in kwargs.items()}
         else:
             textures = args[0]
             self.textures = {}
             for k, v in textures.items():
-                self.textures[k] = TextureProperty(url=v["url"], metadata=v.get("metadata", None))
+                self.textures[k.lower()] = TextureProperty(url=v["url"], metadata=v.get("metadata", None))
 
     @classmethod
     def deserialize(cls, src: str) -> Self:
@@ -96,7 +96,7 @@ class TextureProfile:
             "profileId": uuid_to_str(id),
             "profileName": name,
             "textures": {
-                k: {
+                k.upper(): {
                     "url": v.url,
                     "metadata": v.metadata
                 }

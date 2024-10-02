@@ -1,46 +1,45 @@
+# coding=utf-8
 from functools import cache
 from typing import Literal, Optional, override
 from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
-from fastapi import HTTPException
 
-from yggdrasil.exceptions import InvalidToken, YggdrasilException
-from yggdrasil.proto.handlers import *
-from yggdrasil.proto.interfaces.profile import *
-from yggdrasil.proto.interfaces.root import *
-from yggdrasil.proto.interfaces.session import JoinRequest
-from yggdrasil.proto.interfaces.user import LoginRequest, LogoutRequest, RefreshRequest, UserApiResponse, \
-    ValidationsRequest
-from yggdrasil.proto.profiles import GameProfile
-from yggdrasil.proto.statictypes import AccessToken, GameId
+from yggdrasil.exceptions import YggdrasilException
+from yggdrasil.handlers.proto import *
+from adofai.profiles import GameProfile
+from adofai import AccessToken, GameId
+from yggdrasil.models.root import MetaData
+from yggdrasil.models.session import JoinRequest
+from yggdrasil.models.user import LoginRequest, LogoutRequest, RefreshRequest, UserEndpointsResponse, ValidationsRequest
 from yggdrasil.test.pseudo.profiles import pseudo_game_profile, pseudo_user_profile
-from yggdrasil.utils.context import ClientIP
-from yggdrasil.utils.uuid import uuid_to_str
+from yggdrasil.utils.context import AuthorizationHeader, ClientIP, UploadTexture
+from adofai.utils.uuid import uuid_to_str
 
 
-class PseudoProfileApiHandler(AbstractProfileApiHandler):
+class PseudoHandlerProfile(AbstractHandlerProfile):
 
     async def upload(self, *, accessToken: AuthorizationHeader, uuid: GameId,
                      textureType: Literal["skin", "cape"],
-                     texture: UploadTexture) -> None:
+                     texture: UploadTexture) -> bool:
         if not accessToken:
-            raise HTTPException(401)
+            return False
         if texture.content_type != "image/png":
             raise YggdrasilException(418, "NoWay", f"What a `nice` {textureType}!")
-        return None
+        return True
 
     async def remove(self, *, accessToken: AuthorizationHeader, uuid: GameId,
-                     textureType: Literal["skin", "cape"]) -> None:
-        if not accessToken:
-            raise HTTPException(401)
-        return None
+                     textureType: Literal["skin", "cape"]) -> bool:
+        if accessToken:
+            return True
+        else:
+            return False
 
 
-class PseudoQueryApiHandler(AbstractQueryApiHandler):
+class PseudoHandlerQuery(AbstractHandlerQuery):
     @override
-    async def from_uuid(self, *, uuid: GameId) -> GameProfile:
+    async def from_uuid(self, *, uuid: GameId) -> GameProfile | None:
         return pseudo_game_profile()
 
     @override
@@ -48,7 +47,7 @@ class PseudoQueryApiHandler(AbstractQueryApiHandler):
         return [pseudo_game_profile() for _ in names]
 
 
-class PseudoRootApiHandler(AbstractRootApiHandler):
+class PseudoHandlerRoot(AbstractHandlerRoot):
     @override
     async def home(self) -> MetaData:
         return MetaData(meta={}, skinDomains=[])
@@ -59,39 +58,42 @@ class PseudoRootApiHandler(AbstractRootApiHandler):
         return RSA.generate(2048)
 
 
-class PseudoSessionApiHandler(AbstractSessionApiHandler):
+class PseudoHandlerSession(AbstractHandlerSession):
     @override
-    async def join(self, *, form: JoinRequest, ip: ClientIP) -> None:
-        pass
+    async def join(self, *, form: JoinRequest, ip: ClientIP) -> bool:
+        if len(form.accessToken) > 5:
+            return True
+        else:
+            return False
 
     @override
-    async def has_joined(self, *, username: str, serverId: str, ip: Optional[str] = None) -> GameProfile:
+    async def has_joined(self, *, username: str, serverId: str, ip: Optional[str] = None) -> GameProfile | None:
         if ip:
             return pseudo_game_profile()
         else:
-            raise InvalidToken
+            return None
 
 
-class PseudoUserApiHandler(AbstractUserApiHandler):
+class PseudoHandlerUser(AbstractHandlerUser):
     """后续将用户处理类引入"""
 
     @override
-    async def login(self, *, form: LoginRequest) -> UserApiResponse:
+    async def login(self, *, form: LoginRequest) -> UserEndpointsResponse | None:
         """占位"""
-        return UserApiResponse(accessToken=AccessToken(form.password),
-                               clientToken=form.clientToken or uuid_to_str(uuid4()),
-                               availableProfiles=[],
-                               user=pseudo_user_profile()
-                               )
+        return UserEndpointsResponse(accessToken=AccessToken(form.password),
+                                     clientToken=form.clientToken or uuid_to_str(uuid4()),
+                                     availableProfiles=[],
+                                     user=pseudo_user_profile()
+                                     )
 
     @override
-    async def refresh(self, *, form: RefreshRequest) -> UserApiResponse:
+    async def refresh(self, *, form: RefreshRequest) -> UserEndpointsResponse:
         """占位"""
-        return UserApiResponse(accessToken=form.accessToken,
-                               clientToken=form.clientToken or uuid_to_str(uuid4()),
-                               selectedProfile=form.selectedProfile,
-                               user=pseudo_user_profile()
-                               )
+        return UserEndpointsResponse(accessToken=form.accessToken,
+                                     clientToken=form.clientToken or uuid_to_str(uuid4()),
+                                     selectedProfile=form.selectedProfile,
+                                     user=pseudo_user_profile()
+                                     )
 
     @override
     async def validate(self, *, _: ValidationsRequest) -> bool:

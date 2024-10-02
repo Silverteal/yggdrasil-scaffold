@@ -1,3 +1,7 @@
+# coding=utf-8
+"""RSA 签名工具"""
+__all__ = ["sign_property"]
+
 from base64 import b64encode
 
 from Crypto.Hash import SHA1

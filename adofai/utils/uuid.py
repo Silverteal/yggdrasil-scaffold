@@ -1,7 +1,11 @@
+# coding=utf-8
+"""UUID 工具包，主要包含玩家 UUID 相关的工具"""
+__all__ = ["uuid_to_str", "offline_uuid", "pcl_offline_uuid"]
+
 from hashlib import md5
 from uuid import UUID
 
-from yggdrasil.proto.statictypes import GameId, GameName
+from adofai import GameId, GameName
 
 
 def uuid_to_str(src: UUID | str, signed: bool = False) -> str:

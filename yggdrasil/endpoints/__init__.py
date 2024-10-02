@@ -1,7 +1,5 @@
 # coding=utf-8
-
-__all__ = ["fastapi_instance"]
-
+"""本包注册了 Yggdrasil API 的 FastAPI 端点，包括相关异常处理流程和默认占位处理程序"""
 from http import HTTPStatus
 
 from fastapi import FastAPI, Request
@@ -11,16 +9,17 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.utils import is_body_allowed_for_status_code
 from starlette.exceptions import HTTPException
 
-from yggdrasil.endpoints.profile import profile_apis
-from yggdrasil.endpoints.query import query_apis
-from yggdrasil.endpoints.root import root_api
-from yggdrasil.endpoints.session import session_apis
-from yggdrasil.endpoints.user import user_apis
+from yggdrasil.endpoints.profile import profile_endpoints
+from yggdrasil.endpoints.query import query_endpoints
+from yggdrasil.endpoints.root import root_endpoints
+from yggdrasil.endpoints.session import session_endpoints
+from yggdrasil.endpoints.user import user_endpoints
 from yggdrasil.exceptions import DirectResponseWrapper, YggdrasilException, yggdrasil_error_response
 
 fastapi_instance = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 
+# TODO：换个地放exception_handler
 @fastapi_instance.exception_handler(DirectResponseWrapper)
 async def direct_response_adapter(req: Request, exc: DirectResponseWrapper):
     """直接返回响应体"""
@@ -93,8 +92,8 @@ async def exception_adapter(req: Request, exc: Exception):
                                     )
 
 
-fastapi_instance.include_router(user_apis)
-fastapi_instance.include_router(session_apis)
-fastapi_instance.include_router(query_apis)
-fastapi_instance.include_router(profile_apis)
-fastapi_instance.include_router(root_api)
+fastapi_instance.include_router(user_endpoints)
+fastapi_instance.include_router(session_endpoints)
+fastapi_instance.include_router(query_endpoints)
+fastapi_instance.include_router(profile_endpoints)
+fastapi_instance.include_router(root_endpoints)

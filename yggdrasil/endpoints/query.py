@@ -1,19 +1,21 @@
 # coding=utf-8
+"""注册 Yggdrasil API 的查询端点"""
 from typing import Annotated, Optional
 
 from Crypto.PublicKey.RSA import RsaKey
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Response
 
-from yggdrasil.app import handlers
-from yggdrasil.proto.profiles import GameProfile, SerializedProfile
+from yggdrasil.endpoints import handlers
+from adofai.profiles import GameProfile, SerializedProfile
 
-query_apis = APIRouter()  # 实际上是两类 Vanilla API 的整合，所以前缀不固定
+query_endpoints = APIRouter()  # 实际上是两类 Vanilla API 的整合，所以前缀不固定
 
 
-@query_apis.get("/sessionserver/session/minecraft/profile/{uuid}")
-async def from_uuid(result: Annotated[Optional[GameProfile], Depends(handlers.query.from_uuid)],
+@query_endpoints.get("/sessionserver/session/minecraft/profile/{uuid}")
+async def from_uuid(rsp: Response,
+                    result: Annotated[Optional[GameProfile], Depends(handlers.query.from_uuid)],
                     sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)],
-                    unsigned: bool = True) -> SerializedProfile:
+                    unsigned: bool = True) -> SerializedProfile | None:
     """从UUID查询单个玩家"""
     if result is not None:
         if unsigned:
@@ -21,10 +23,11 @@ async def from_uuid(result: Annotated[Optional[GameProfile], Depends(handlers.qu
         else:
             return result.serialize("full", sign_key)
     else:
-        raise HTTPException(204)
+        rsp.status_code = 204
+        return None
 
 
-@query_apis.post("/api/profiles/minecraft")
+@query_endpoints.post("/api/profiles/minecraft")
 async def from_name_batch(result: Annotated[
     list[GameProfile], Depends(handlers.query.from_name_batch)
 ]) -> list[SerializedProfile]:
