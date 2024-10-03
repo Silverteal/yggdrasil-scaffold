@@ -1,7 +1,8 @@
 # coding=utf-8
+"""定义业务异常"""
 
 __all__ = ["DirectResponseWrapper", "YggdrasilException", "InvalidToken", "InvalidCredentials", "InvalidOwnership",
-           "AlreadyBound"]
+           "AlreadyBound", "yggdrasil_error_response"]
 
 from collections.abc import Mapping
 from typing import Optional

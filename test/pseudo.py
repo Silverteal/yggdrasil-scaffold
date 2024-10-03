@@ -6,18 +6,20 @@ from uuid import uuid4
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 
+from adofai import AccessToken, GameId, GameProfile
+from adofai.utils.profile import random_game_profile, random_user_profile
+from adofai.utils.uuid import uuid_to_str
+from yggdrasil import fastapi_instance
 from yggdrasil.exceptions import YggdrasilException
+from yggdrasil.handlers import register
 from yggdrasil.handlers.proto import *
-from adofai.profiles import GameProfile
-from adofai import AccessToken, GameId
 from yggdrasil.models.root import MetaData
 from yggdrasil.models.session import JoinRequest
 from yggdrasil.models.user import LoginRequest, LogoutRequest, RefreshRequest, UserEndpointsResponse, ValidationsRequest
-from yggdrasil.test.pseudo.profiles import pseudo_game_profile, pseudo_user_profile
 from yggdrasil.utils.context import AuthorizationHeader, ClientIP, UploadTexture
-from adofai.utils.uuid import uuid_to_str
 
 
+@register.profile
 class PseudoHandlerProfile(AbstractHandlerProfile):
 
     async def upload(self, *, accessToken: AuthorizationHeader, uuid: GameId,
@@ -37,16 +39,18 @@ class PseudoHandlerProfile(AbstractHandlerProfile):
             return False
 
 
+@register.query
 class PseudoHandlerQuery(AbstractHandlerQuery):
     @override
     async def from_uuid(self, *, uuid: GameId) -> GameProfile | None:
-        return pseudo_game_profile()
+        return random_game_profile()
 
     @override
     async def from_name_batch(self, *, names: list[str]) -> list[GameProfile]:
-        return [pseudo_game_profile() for _ in names]
+        return [random_game_profile() for _ in names]
 
 
+@register.root
 class PseudoHandlerRoot(AbstractHandlerRoot):
     @override
     async def home(self) -> MetaData:
@@ -58,6 +62,7 @@ class PseudoHandlerRoot(AbstractHandlerRoot):
         return RSA.generate(2048)
 
 
+@register.session
 class PseudoHandlerSession(AbstractHandlerSession):
     @override
     async def join(self, *, form: JoinRequest, ip: ClientIP) -> bool:
@@ -69,11 +74,12 @@ class PseudoHandlerSession(AbstractHandlerSession):
     @override
     async def has_joined(self, *, username: str, serverId: str, ip: Optional[str] = None) -> GameProfile | None:
         if ip:
-            return pseudo_game_profile()
+            return random_game_profile()
         else:
             return None
 
 
+@register.user
 class PseudoHandlerUser(AbstractHandlerUser):
     """后续将用户处理类引入"""
 
@@ -83,7 +89,7 @@ class PseudoHandlerUser(AbstractHandlerUser):
         return UserEndpointsResponse(accessToken=AccessToken(form.password),
                                      clientToken=form.clientToken or uuid_to_str(uuid4()),
                                      availableProfiles=[],
-                                     user=pseudo_user_profile()
+                                     user=random_user_profile()
                                      )
 
     @override
@@ -92,7 +98,7 @@ class PseudoHandlerUser(AbstractHandlerUser):
         return UserEndpointsResponse(accessToken=form.accessToken,
                                      clientToken=form.clientToken or uuid_to_str(uuid4()),
                                      selectedProfile=form.selectedProfile,
-                                     user=pseudo_user_profile()
+                                     user=random_user_profile()
                                      )
 
     @override
@@ -108,3 +114,6 @@ class PseudoHandlerUser(AbstractHandlerUser):
     async def logout(self, *, _: LogoutRequest) -> bool:
         """占位"""
         return False
+
+
+fastapi_instance = fastapi_instance

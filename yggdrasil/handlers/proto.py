@@ -8,11 +8,10 @@ from typing import Literal, Optional
 
 from Crypto.PublicKey.RSA import RsaKey
 
-from adofai.profiles import GameProfile
-from adofai import GameId
-from yggdrasil.models.user import *
-from yggdrasil.models.session import *
+from adofai import GameId, GameProfile
 from yggdrasil.models.root import *
+from yggdrasil.models.session import *
+from yggdrasil.models.user import *
 from yggdrasil.utils.context import AuthorizationHeader, ClientIP, UploadTexture
 
 
@@ -228,17 +227,4 @@ class AbstractHandlerRoot(ABC):
         """
         raise NotImplementedError
 
-
-# TODO：切记：改完后记得改yggdrasil.handlers.register
-
-if __name__ == "__main__":
-    from yggdrasil.test.pseudo.profiles import pseudo_game_profile, pseudo_user_profile
-
-    test = UserEndpointsResponse(accessToken="test1", clientToken="test2",
-                                 availableProfiles=[pseudo_game_profile()],
-                                 user=pseudo_user_profile())
-    print(test)
-    print(test.model_dump_json(exclude_unset=True))
-    del test.user
-    print(test)
-    print(test.model_dump_json(exclude_unset=True))
+# TODO：切记：改完后记得改 register

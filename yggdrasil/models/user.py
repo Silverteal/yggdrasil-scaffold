@@ -6,9 +6,8 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel, field_serializer, field_validator
 
+from adofai import AccessToken, ClientToken, GameProfile, SerializedProfile, UserLoginName, UserProfile
 from yggdrasil.models import LoosenBaseModel
-from adofai.profiles import GameProfile, UserProfile, SerializedProfile
-from adofai import AccessToken, ClientToken, UserLoginName
 
 
 class LoginRequest(BaseModel):
@@ -35,7 +34,7 @@ class RefreshRequest(BaseModel):
     selectedProfile: Annotated[
         Optional[SerializedProfile],
         GameProfile | None
-    ] = None  # 一个Trick：实际处理程序读取到的是GameProfile | None。TODO：客户端代码可能因此无法通过类型检查。
+    ] = None  # 一个Trick：实际处理程序读取到的是GameProfile | None。TODO：处理程序代码可能因此无法通过类型检查。
 
     @field_validator("selectedProfile")
     @classmethod

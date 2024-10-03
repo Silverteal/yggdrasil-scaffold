@@ -16,11 +16,3 @@ class JoinRequest(BaseModel):
     accessToken: AccessToken
     selectedProfile: GameId  # 输入是 str，输出是 GameId
     serverId: str
-
-
-if __name__ == '__main__':
-    JoinRequest(
-        accessToken='<PASSWORD>',
-        selectedProfile='00000000-0000-0000-0000-000000000000',
-        serverId='123',
-    )

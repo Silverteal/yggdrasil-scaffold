@@ -5,9 +5,8 @@ from uuid import uuid4
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 
-from adofai import ClientToken, GameName, UserId
-from adofai.profiles import GameProfile, UserProfile
-from adofai.utils.profile import fake_token, offline_profile, parse_fake_token, prompt_profile
+from adofai import ClientToken, GameName, GameProfile, UserId, UserProfile
+from adofai.utils.profile import fake_token, offline_game_profile, parse_fake_token, prompt_game_profile
 from adofai.utils.uuid import offline_uuid, uuid_to_str
 from yggdrasil import fastapi_instance
 from yggdrasil.handlers import register
@@ -58,11 +57,11 @@ class UserHandler(AbstractHandlerUser):
         return UserEndpointsResponse(
             accessToken=fake_token(profile),
             clientToken=form.clientToken or ClientToken(uuid_to_str(uuid4())),
-            availableProfiles=[prompt_profile("感谢您使用盗版验证v1.0"),
-                               prompt_profile("登录请选择第三项，也就是您输入的用户名"),
+            availableProfiles=[prompt_game_profile("感谢您使用盗版验证v1.0"),
+                               prompt_game_profile("登录请选择第三项，也就是您输入的用户名"),
                                profile,
-                               prompt_profile(f"UUID：{unique}"),
-                               prompt_profile(f"顺带一提，您的密码 {form.password} 超酷的")],
+                               prompt_game_profile(f"UUID：{unique}"),
+                               prompt_game_profile(f"顺带一提，您的密码 {form.password} 超酷的")],
             selectedProfile=None,
             user=UserProfile(id=UserId(unique))
         )
@@ -98,7 +97,7 @@ class SessionHandler(AbstractHandlerSession):
 
     @override
     async def has_joined(self, *, username: str, serverId: str, ip: Optional[str] = None) -> GameProfile | None:
-        return offline_profile(GameName(username))
+        return offline_game_profile(GameName(username))
 
 
 fastapi_instance = fastapi_instance  # avoid gc
