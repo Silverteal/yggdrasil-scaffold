@@ -2,19 +2,22 @@
 
 [[package]]
 name = "adofai"
-version = "0.1.0"
-description = "Shared data model for authlib-injector yggdrasil implementation and Minecraft services"
+version = "0.1.0.dev0"
+description = "Shared data model for authlib-injector yggdrasil implementation and Minecraft API services"
 optional = false
-python-versions = "^3.12"
-files = []
-develop = true
+python-versions = ">=3.12,<4.0"
+files = [
+    {file = "adofai-0.1.0.dev0-py3-none-any.whl", hash = "sha256:33a19ba689019118cb8522d31dabc85a9769351cc7aefae858486d13da4d7a8d"},
+    {file = "adofai-0.1.0.dev0.tar.gz", hash = "sha256:10506e6eed97427574771bbd3a1af1821a7f0977298a38858b7d693e06404722"},
+]
 
 [package.dependencies]
-pycryptodome = "^3.21.0"
+pycryptodome = ">=3.21.0,<4.0.0"
 
 [package.source]
-type = "directory"
-url = "../adofai"
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "Tsinghua"
 
 [[package]]
 name = "annotated-types"
@@ -354,4 +357,4 @@ reference = "Tsinghua"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "17f49b2567a39dd9493c70b40cd407a05aeb0b9287aaa7d5b03140d5f3447d47"
+content-hash = "cf80d38e27243ec899ca69c4b11fb6e4ea27f289bb13e3e87a53a68b29df10cc"

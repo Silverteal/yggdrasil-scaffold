@@ -1,10 +1,12 @@
 [tool.poetry]
-name = "yggdrasilframework"
-version = "0.1.0"
-description = ""
+name = "yaya"
+version = "0.1.0-dev"
+description = "Yet Another Yggdrasil Agent (for authlib injector)"
+license = "MIT"
 authors = ["Silverteal <67404722+Silverteal@users.noreply.github.com>"]
 readme = "README.md"
-keywords = ["minecraft", "mc", "authlib", "injector", "implementaion", "api", "yggdrasil"]
+repository = "https://github.com/Silverteal/adofai"
+keywords = ["minecraft", "mc", "authlib", "authlib-injector", "implementaion", "api", "yggdrasil"]
 packages = [
     { include = "yggdrasil" },
 ]
@@ -15,7 +17,7 @@ fastapi = "^0.115.0"
 pycryptodome = "^3.21.0"
 pydantic = "^2.9.2"
 python-multipart = "^0.0.12"
-adofai = { path = "../adofai/", develop = true }
+adofai = "^0.1.0-dev"
 
 [[tool.poetry.source]]
 name = "Tsinghua"

@@ -32,8 +32,14 @@
     - join：加入
     - has joined：验证，即正版验证
 - query：查询
+    - from name batch：批量查询玩家名
+    - from uuid：查询玩家档案
 - profile：材质管理
+    - upload：上传
+    - remove：移除
 - root：元数据
+    - home：主页面，即展示元数据、材质域名白名单和签名公钥的端点
+    - sign key：签名密钥对
 
 请尽量保持命名风格一致
 

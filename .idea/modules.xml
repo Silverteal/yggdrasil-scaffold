@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Yggdrasil Solution Framework.iml" filepath="$PROJECT_DIR$/.idea/Yggdrasil Solution Framework.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../adofai/.idea/adofai.iml" filepath="$PROJECT_DIR$/../adofai/.idea/adofai.iml" />
     </modules>
   </component>
 </project>

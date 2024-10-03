@@ -5,9 +5,9 @@ from typing import Annotated
 from Crypto.PublicKey.RSA import RsaKey
 from fastapi import APIRouter, Depends, Response
 
+from adofai import GameProfile, SerializedProfile
 from yggdrasil.endpoints import handlers
 from yggdrasil.exceptions import InvalidToken
-from adofai import GameProfile, SerializedProfile
 
 session_endpoints = APIRouter(prefix="/sessionserver/session/minecraft")
 
