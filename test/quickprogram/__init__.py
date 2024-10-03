@@ -6,9 +6,9 @@ from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 
 from adofai import ClientToken, GameName, UserId
-from adofai.profiles import GameProfile, UserProfile
-from adofai.utils.profile import fake_token, offline_profile, parse_fake_token, prompt_profile
-from adofai.utils.uuid import offline_uuid, uuid_to_str
+from adofai import GameProfile, UserProfile
+from adofai import fake_token, offline_profile, parse_fake_token, prompt_profile
+from adofai import offline_uuid, uuid_to_str
 from yggdrasil import fastapi_instance
 from yggdrasil.handlers import register
 from yggdrasil.handlers.proto import AbstractHandlerRoot, AbstractHandlerSession, AbstractHandlerUser

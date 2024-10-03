@@ -8,14 +8,14 @@ from Crypto.PublicKey.RSA import RsaKey
 
 from yggdrasil.exceptions import YggdrasilException
 from yggdrasil.handlers.proto import *
-from adofai.profiles import GameProfile
+from adofai import GameProfile
 from adofai import AccessToken, GameId
 from yggdrasil.models.root import MetaData
 from yggdrasil.models.session import JoinRequest
 from yggdrasil.models.user import LoginRequest, LogoutRequest, RefreshRequest, UserEndpointsResponse, ValidationsRequest
 from yggdrasil.test.pseudo.profiles import pseudo_game_profile, pseudo_user_profile
 from yggdrasil.utils.context import AuthorizationHeader, ClientIP, UploadTexture
-from adofai.utils.uuid import uuid_to_str
+from adofai import uuid_to_str
 
 
 class PseudoHandlerProfile(AbstractHandlerProfile):

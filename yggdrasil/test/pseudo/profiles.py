@@ -2,10 +2,10 @@
 from random import choice, randint
 from uuid import uuid4
 
-from adofai.profiles import GameProfile, UserProfile
+from adofai import GameProfile, UserProfile
 from adofai.textures import TextureProfile, TextureProperty
 from adofai import GameName, TextureUrl, UserId
-from adofai.utils.uuid import offline_uuid
+from adofai import offline_uuid
 
 
 def pseudo_user_profile() -> UserProfile:

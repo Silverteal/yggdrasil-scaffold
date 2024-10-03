@@ -8,7 +8,7 @@ from typing import Literal, Optional
 
 from Crypto.PublicKey.RSA import RsaKey
 
-from adofai.profiles import GameProfile
+from adofai import GameProfile
 from adofai import GameId
 from yggdrasil.models.user import *
 from yggdrasil.models.session import *

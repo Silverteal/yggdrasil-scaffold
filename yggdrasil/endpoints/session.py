@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Response
 
 from yggdrasil.endpoints import handlers
 from yggdrasil.exceptions import InvalidToken
-from adofai.profiles import GameProfile, SerializedProfile
+from adofai import GameProfile, SerializedProfile
 
 session_endpoints = APIRouter(prefix="/sessionserver/session/minecraft")
 

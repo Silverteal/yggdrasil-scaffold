@@ -6,7 +6,7 @@ from Crypto.PublicKey.RSA import RsaKey
 from fastapi import APIRouter, Depends, Response
 
 from yggdrasil.endpoints import handlers
-from adofai.profiles import GameProfile, SerializedProfile
+from adofai import GameProfile, SerializedProfile
 
 query_endpoints = APIRouter()  # 实际上是两类 Vanilla API 的整合，所以前缀不固定
 

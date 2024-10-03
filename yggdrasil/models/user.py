@@ -7,7 +7,7 @@ from typing import Annotated, Optional
 from pydantic import BaseModel, field_serializer, field_validator
 
 from yggdrasil.models import LoosenBaseModel
-from adofai.profiles import GameProfile, UserProfile, SerializedProfile
+from adofai import GameProfile, UserProfile, SerializedProfile
 from adofai import AccessToken, ClientToken, UserLoginName
 
 

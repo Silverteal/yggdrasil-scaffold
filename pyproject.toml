@@ -4,16 +4,23 @@ version = "0.1.0"
 description = ""
 authors = ["Silverteal <67404722+Silverteal@users.noreply.github.com>"]
 readme = "README.md"
+keywords = ["minecraft", "mc", "authlib", "injector", "implementaion", "api", "yggdrasil"]
+packages = [
+    { include = "yggdrasil" },
+]
 
 [tool.poetry.dependencies]
-python = "~3.12"
-fastapi = "~0.115.0"
-uvicorn = "~0.30.6"
-pycryptodome = "~3.20.0"
-pydantic = "~2.9.2"
-starlette = "~0.38.5"
-python-multipart = "~0.0.10"
+python = "^3.12"
+fastapi = "^0.115.0"
+pycryptodome = "^3.21.0"
+pydantic = "^2.9.2"
+python-multipart = "^0.0.12"
+adofai = { path = "../adofai/", develop = true }
 
+[[tool.poetry.source]]
+name = "Tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+priority = "primary"
 
 [build-system]
 requires = ["poetry-core"]
