@@ -4,9 +4,10 @@ __all__ = ["LoginRequest", "RefreshRequest", "ValidationsRequest", "LogoutReques
 
 from typing import Annotated, Optional
 
+from adofai import AccessToken, ClientToken, SerializedProfile, UserLoginName
+from adofai.models import GameProfile, UserProfile
 from pydantic import BaseModel, field_serializer, field_validator
 
-from adofai import AccessToken, ClientToken, GameProfile, SerializedProfile, UserLoginName, UserProfile
 from yggdrasil.models import LoosenBaseModel
 
 

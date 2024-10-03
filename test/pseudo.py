@@ -6,7 +6,8 @@ from uuid import uuid4
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 
-from adofai import AccessToken, GameId, GameProfile
+from adofai import AccessToken, GameId
+from adofai.models import GameProfile
 from adofai.utils.profile import random_game_profile, random_user_profile
 from adofai.utils.uuid import uuid_to_str
 from yggdrasil import fastapi_instance

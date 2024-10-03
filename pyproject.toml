@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "yggdrasil-scaffold"
-version = "0.1.0-dev"
+version = "0.1.0-dev2"
 description = "Yggdrasil Scaffold for Authlib-injector"
 license = "MIT"
 authors = ["Silverteal <67404722+Silverteal@users.noreply.github.com>"]
@@ -17,12 +17,10 @@ fastapi = "^0.115.0"
 pycryptodome = "^3.21.0"
 pydantic = "^2.9.2"
 python-multipart = "^0.0.12"
-adofai = "^0.1.0-dev"
+adofai = "^0.1.0-dev3"
 
-[[tool.poetry.source]]
-name = "Tsinghua"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
-priority = "primary"
+[tool.poetry.group.dev.dependencies]
+uvicorn = "^0.31.0"
 
 [build-system]
 requires = ["poetry-core"]

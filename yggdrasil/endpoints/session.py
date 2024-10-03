@@ -5,7 +5,8 @@ from typing import Annotated
 from Crypto.PublicKey.RSA import RsaKey
 from fastapi import APIRouter, Depends, Response
 
-from adofai import GameProfile, SerializedProfile
+from adofai import SerializedProfile
+from adofai.models import GameProfile
 from yggdrasil.endpoints import handlers
 from yggdrasil.exceptions import InvalidToken
 
