@@ -6,7 +6,13 @@ Yggdrasil 是 Minecraft 中身份验证服务的实现名称。
 
 ## 使用方式
 
-文档还没有写。但是这里有些资料：
+### 安装
+
+```shell
+pip install yggdrasil-scaffold
+```
+
+详细的文档还没有写。但是这里有些资料：
 
 ### 可用资源
 
