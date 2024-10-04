@@ -1101,13 +1101,13 @@ multidict = ">=4.0"
 
 [[package]]
 name = "yggdrasil-client"
-version = "0.1.0.dev5"
-description = "(Unfinished) Minecraft Yggdrasil protocol compatible client based on ADOFAI. Supports mojang backend."
+version = "0.1.0.dev8"
+description = "Minecraft Yggdrasil protocol compatible client based on ADOFAI. Supports mojang backend."
 optional = true
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "yggdrasil_client-0.1.0.dev5-py3-none-any.whl", hash = "sha256:fcf548191683193b8271b8451675dc48bf8b71c75bcb09d6f7ccb471a829bd78"},
-    {file = "yggdrasil_client-0.1.0.dev5.tar.gz", hash = "sha256:643359e08e4d8c47bf8bb1f1180011be651dd26e8a6aad65e5719a047ed3d192"},
+    {file = "yggdrasil_client-0.1.0.dev8-py3-none-any.whl", hash = "sha256:086247a15c123aa3cf563326303a069f2287f7a207a625166fb9830b7b120f13"},
+    {file = "yggdrasil_client-0.1.0.dev8.tar.gz", hash = "sha256:420929cd916bba47a5d4965bc88b7f4b99fbad5e3ea4bc06be64838f07fc5888"},
 ]
 
 [package.dependencies]
@@ -1115,9 +1115,9 @@ adofai = ">=0.1.0.dev6,<0.2.0"
 aiohttp = {version = ">=3.10.8,<4.0.0", extras = ["speedups"]}
 
 [extras]
-agent = ["yggdrasil-client"]
+upstream = ["yggdrasil-client"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "d9acfebc4e58055800919e86e9fe4c5e42e5893f737672f66dbceffaec281d0b"
+content-hash = "2e44f8419f0d19c42e63fbec3bb3f00245c5fda6420b8dd295ae35cc87cbf4fc"

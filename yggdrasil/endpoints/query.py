@@ -14,7 +14,7 @@ query_endpoints = APIRouter()  # 实际上是两类 Vanilla API 的整合，所�
 
 @query_endpoints.get("/sessionserver/session/minecraft/profile/{uuid}")
 async def query_by_uuid(rsp: Response,
-                        result: Annotated[Optional[FulfilledGameProfile], Depends(handlers.query.query_by_uuid)],
+                        result: Annotated[FulfilledGameProfile | None, Depends(handlers.query.query_by_uuid)],
                         sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)],
                         unsigned: bool = True) -> SerializedProfile | None:
     """从UUID查询单个玩家"""

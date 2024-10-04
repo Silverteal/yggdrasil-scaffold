@@ -1,22 +1,24 @@
 # coding=utf-8
-from typing import Optional, override
+from typing import override
 from uuid import uuid4
 
-from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 from adofai import ClientToken, GameName, UserId
 from adofai.models import FulfilledGameProfile, GameProfile, PartialGameProfile, UserProfile
-from adofai.utils.profile import fake_token, offline_game_profile, parse_fake_token, prompt_game_profile, \
-    random_game_profile
+from adofai.utils.profile import fake_token, parse_fake_token, prompt_game_profile
+from adofai.utils.signing import dummy_key
 from adofai.utils.uuid import offline_uuid, uuid_to_str
+from yggdrasil_client import MojangProvider
 
 from yggdrasil import fastapi_instance
 from yggdrasil.handlers import register
-from yggdrasil.handlers.proto import AbstractHandlerRoot, AbstractHandlerSession, AbstractHandlerUser
+from yggdrasil.handlers.proto import AbstractHandlerQuery, AbstractHandlerRoot, AbstractHandlerSession, \
+    AbstractHandlerUser
 from yggdrasil.models.root import MetaData
 from yggdrasil.models.session import JoinRequest
 from yggdrasil.models.user import LoginRequest, LogoutRequest, RefreshRequest, UserEndpointsResponse, ValidationsRequest
 from yggdrasil.utils.context import ClientIP
+from yggdrasil.utils.upstream import UpstreamWrapper
 
 
 # @fastapi_instance.middleware("http")
@@ -27,9 +29,6 @@ from yggdrasil.utils.context import ClientIP
 
 @register.root
 class RootHandler(AbstractHandlerRoot):
-
-    def __init__(self) -> None:
-        self.key = RSA.generate(2048)
 
     @override
     async def home(self) -> MetaData:
@@ -44,7 +43,11 @@ class RootHandler(AbstractHandlerRoot):
 
     @override
     async def sign_key(self) -> RsaKey:
-        return self.key
+        return dummy_key()
+
+
+mojang_client = MojangProvider()
+mojang = UpstreamWrapper(mojang_client)
 
 
 @register.user
@@ -52,9 +55,18 @@ class UserHandler(AbstractHandlerUser):
 
     @override
     async def login(self, *, form: LoginRequest) -> UserEndpointsResponse | None:
+        real_player_identifier = None
+        uid = None
         name = GameName(form.username)
-        unique = offline_uuid(name)
-        profile = PartialGameProfile(GameProfile(id=unique, name=name))
+        profile = await mojang_client.query_by_name(name)
+        if profile:
+            real_player_identifier = "正版玩家"
+            uid = profile.id
+        else:
+            real_player_identifier = "不存在玩家"
+            uid = offline_uuid(name)
+
+        profile = PartialGameProfile(GameProfile(id=uid, name=name))
 
         return UserEndpointsResponse(
             accessToken=fake_token(profile),
@@ -62,10 +74,10 @@ class UserHandler(AbstractHandlerUser):
             availableProfiles=[prompt_game_profile("感谢您使用盗版验证v1.0"),
                                prompt_game_profile("登录请选择第三项，也就是您输入的用户名"),
                                profile,
-                               prompt_game_profile(f"UUID：{unique}"),
+                               prompt_game_profile(f"UUID：{uid}，{real_player_identifier}"),
                                prompt_game_profile(f"顺带一提，您的密码 {form.password} 超酷的")],
             selectedProfile=None,
-            user=UserProfile(id=UserId(unique))
+            user=UserProfile(id=UserId(uid))
         )
 
     @override
@@ -98,9 +110,20 @@ class SessionHandler(AbstractHandlerSession):
         return True
 
     @override
-    async def has_joined(self, *, username: GameName, serverId: str,
-                         ip: Optional[str] = None) -> FulfilledGameProfile | None:
-        return FulfilledGameProfile(offline_game_profile(GameName(username)))
+    async def has_joined(self, *, remote_result: mojang.has_joined) -> FulfilledGameProfile | None:
+        return remote_result  # 此处通过调取依赖项直接将流量导向了 Mojang API
+
+
+@register.query
+class QueryHandler(AbstractHandlerQuery):
+
+    @override
+    async def query_by_names(self, *, remote_result: mojang.query_by_names) -> list[PartialGameProfile]:
+        return remote_result  # 此处通过调取依赖项直接将流量导向了 Mojang API
+
+    @override
+    async def query_by_uuid(self, *, remote_result: mojang.query_by_uuid) -> FulfilledGameProfile | None:
+        return remote_result  # 此处通过调取依赖项直接将流量导向了 Mojang API
 
 
 fastapi_instance = fastapi_instance  # avoid gc

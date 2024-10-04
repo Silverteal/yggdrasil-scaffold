@@ -125,7 +125,7 @@ class AbstractHandlerSession(ABC):
         raise NotImplementedError
 
     async def has_joined(self, *, username: GameName, serverId: str,
-                         ip: Optional[str] = None) -> FulfilledGameProfile | None:
+                         ip: Optional[str] = None) -> FulfilledGameProfile | Literal[False]:
         """检查客户端会话的有效性，即数据库中是否存在该 serverId 的记录，且信息正确。
 
         username 需要与 serverId 所对应令牌所绑定的玩家名相同。
@@ -135,7 +135,7 @@ class AbstractHandlerSession(ABC):
         :param username: 正在加入服务器的玩家名
         :param serverId: 服务端发送给客户端的 serverId，标识该玩家正在加入的服务器
         :param ip: Minecraft 服务端获取到的客户端 IP，仅当 Minecraft 服务端 prevent-proxy-connections 选项开启时包含
-        :returns: 响应的正文，即加入玩家的玩家档案，或返回 None 来表示没有可用的档案
+        :returns: 响应的正文，即加入玩家的玩家档案，或返回 False 来表示该玩家没有加入
         """
         raise NotImplementedError
 

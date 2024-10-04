@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "yggdrasil-scaffold"
-version = "0.1.0-dev5"
+version = "0.1.0-dev6"
 description = "Yggdrasil Scaffold for Authlib-injector"
 license = "MIT"
 authors = ["Silverteal <67404722+Silverteal@users.noreply.github.com>"]
@@ -17,10 +17,10 @@ fastapi = "^0.115.0"
 pydantic = "^2.9.2"
 python-multipart = "^0.0.12"
 adofai = "^0.1.0-dev6"
-yggdrasil-client = { version = "^0.1.0.dev2", optional = true }
 
+yggdrasil-client = { version = "^0.1.0.dev8", optional = true }
 [tool.poetry.extras]
-agent = ["yggdrasil-client"]
+upstream = ["yggdrasil-client"]
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.31.0"
