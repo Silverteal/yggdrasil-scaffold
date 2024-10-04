@@ -3,7 +3,8 @@
 __all__ = ["AbstractHandlerProfile", "AbstractHandlerQuery", "AbstractHandlerRoot",
            "AbstractHandlerSession", "AbstractHandlerUser"]
 
-from typing import Literal, Optional, Protocol
+from typing import Literal, Optional
+from abc import ABC
 
 from Crypto.PublicKey.RSA import RsaKey
 from adofai import GameId, GameName
@@ -14,8 +15,8 @@ from yggdrasil.models.session import *
 from yggdrasil.models.user import *
 from yggdrasil.utils.context import AuthorizationHeader, ClientIP, UploadTexture
 
-
-class AbstractHandlerUser(Protocol):
+# TODO：typing.Protocol
+class AbstractHandlerUser(ABC):
     """用户端点处理程序抽象基类"""
 
     async def login(self, *, form: LoginRequest) -> UserEndpointsResponse | None:
@@ -100,7 +101,7 @@ class AbstractHandlerUser(Protocol):
         raise NotImplementedError
 
 
-class AbstractHandlerSession(Protocol):
+class AbstractHandlerSession(ABC):
     """用户端点处理程序抽象基类"""
 
     async def join(self, *, form: JoinRequest, ip: ClientIP) -> bool:
@@ -139,7 +140,7 @@ class AbstractHandlerSession(Protocol):
         raise NotImplementedError
 
 
-class AbstractHandlerQuery(Protocol):
+class AbstractHandlerQuery(ABC):
     """查询端点处理程序抽象基类"""
 
     async def query_by_uuid(self, *, uuid: GameId) -> FulfilledGameProfile | None:
@@ -164,7 +165,7 @@ class AbstractHandlerQuery(Protocol):
         raise NotImplementedError
 
 
-class AbstractHandlerProfile(Protocol):
+class AbstractHandlerProfile(ABC):
     """材质管理端点处理程序抽象基类"""
 
     async def upload(self, *, accessToken: AuthorizationHeader, uuid: GameId,
@@ -205,7 +206,7 @@ class AbstractHandlerProfile(Protocol):
         raise NotImplementedError
 
 
-class AbstractHandlerRoot(Protocol):
+class AbstractHandlerRoot(ABC):
     """元数据端点处理程序抽象基类"""
 
     async def home(self) -> MetaData:

@@ -32,8 +32,8 @@
     - join：加入
     - has joined：验证，即正版验证
 - query：查询
-    - from name batch：批量查询玩家名
-    - from uuid：查询玩家档案
+    - query by names：通过玩家名批量查询
+    - query by uuid：通过玩家 UUID 查询玩家档案
 - profile：材质管理
     - upload：上传
     - remove：移除
