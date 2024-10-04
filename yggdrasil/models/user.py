@@ -5,7 +5,7 @@ __all__ = ["LoginRequest", "RefreshRequest", "ValidationsRequest", "LogoutReques
 from typing import Annotated, Optional
 
 from adofai import AccessToken, ClientToken, SerializedProfile, UserLoginName
-from adofai.models import GameProfile, UserProfile
+from adofai.models import GameProfile, PartialGameProfile, UserProfile
 from pydantic import BaseModel, field_serializer, field_validator
 
 from yggdrasil.models import LoosenBaseModel
@@ -108,16 +108,16 @@ class UserEndpointsResponse(LoosenBaseModel):
     """
     accessToken: AccessToken
     clientToken: ClientToken
-    availableProfiles: Optional[list[GameProfile]] = None
-    selectedProfile: Optional[GameProfile] = None
+    availableProfiles: Optional[list[PartialGameProfile]] = None
+    selectedProfile: Optional[PartialGameProfile] = None
     user: Optional[UserProfile] = None
 
     @field_serializer("availableProfiles", when_used="unless-none")
-    def _export_ap(self, ap: Optional[list[GameProfile]]) -> list[SerializedProfile]:
+    def _export_ap(self, ap: Optional[list[PartialGameProfile]]) -> list[SerializedProfile]:
         return [i.serialize("minimum") for i in ap]
 
     @field_serializer("selectedProfile", when_used="unless-none")
-    def _export_sp(self, sp: Optional[GameProfile]) -> SerializedProfile:
+    def _export_sp(self, sp: Optional[PartialGameProfile]) -> SerializedProfile:
         return sp.serialize("minimum")
 
     @field_serializer("user", when_used="unless-none")

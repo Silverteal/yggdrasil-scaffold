@@ -6,7 +6,7 @@ from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 
 from adofai import ClientToken, GameName, UserId
-from adofai.models import UserProfile, GameProfile
+from adofai.models import PartialGameProfile, UserProfile, GameProfile
 from adofai.utils.profile import fake_token, offline_game_profile, parse_fake_token, prompt_game_profile
 from adofai.utils.uuid import offline_uuid, uuid_to_str
 from yggdrasil import fastapi_instance
@@ -53,7 +53,7 @@ class UserHandler(AbstractHandlerUser):
     async def login(self, *, form: LoginRequest) -> UserEndpointsResponse | None:
         name = GameName(form.username)
         unique = offline_uuid(name)
-        profile = GameProfile(id=unique, name=name)
+        profile = PartialGameProfile(GameProfile(id=unique, name=name))
 
         return UserEndpointsResponse(
             accessToken=fake_token(profile),

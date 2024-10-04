@@ -6,7 +6,7 @@ from Crypto.PublicKey.RSA import RsaKey
 from fastapi import APIRouter, Depends, Response
 
 from adofai import SerializedProfile
-from adofai.models import GameProfile
+from adofai.models import FulfilledGameProfile
 from yggdrasil.endpoints import handlers
 from yggdrasil.exceptions import InvalidToken
 
@@ -21,7 +21,7 @@ async def join(result: Annotated[bool, Depends(handlers.session.join)]) -> None:
 
 
 @session_endpoints.get("/hasJoined")
-async def has_joined(game_profile: Annotated[GameProfile, Depends(handlers.session.has_joined)],
+async def has_joined(game_profile: Annotated[FulfilledGameProfile, Depends(handlers.session.has_joined)],
                      sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)],
                      rsp: Response) -> SerializedProfile | None:
     """处理服务侧正版验证逻辑"""

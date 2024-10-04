@@ -2,13 +2,13 @@
 
 [[package]]
 name = "adofai"
-version = "0.1.0.dev3"
+version = "0.1.0.dev4"
 description = "Shared data model for authlib-injector yggdrasil implementation and Minecraft API services"
 optional = false
 python-versions = "<4.0,>=3.12"
 files = [
-    {file = "adofai-0.1.0.dev3-py3-none-any.whl", hash = "sha256:2eb8c0d469049207c53afcd6b61772a400a7b3b7640f7de4c6e38f19c41547ec"},
-    {file = "adofai-0.1.0.dev3.tar.gz", hash = "sha256:6583473f11a9ff4cedb5056255f5271e949b04717071d60a8448419c1a98098a"},
+    {file = "adofai-0.1.0.dev4-py3-none-any.whl", hash = "sha256:e26342e71dea3beb17844fb8cd8ca1a72077c03c8e138424b4aadc270f098659"},
+    {file = "adofai-0.1.0.dev4.tar.gz", hash = "sha256:be0049890bde240bd1879f6d2755770afc9b0735cf205ba0c30cee791b146338"},
 ]
 
 [package.dependencies]
@@ -351,4 +351,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "7bdf883870edd5829cd1d19c824b184136b90a1331a97919274ce2ab6c7cfdb4"
+content-hash = "7a6d2f34f9b4a8b43631b750a2f830a3484ceb4a98c639d2ebfd7662b0f0f45a"

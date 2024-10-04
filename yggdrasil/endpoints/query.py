@@ -3,18 +3,18 @@
 from typing import Annotated, Optional
 
 from Crypto.PublicKey.RSA import RsaKey
+from adofai import SerializedProfile
+from adofai.models import FulfilledGameProfile, PartialGameProfile
 from fastapi import APIRouter, Depends, Response
 
 from yggdrasil.endpoints import handlers
-from adofai import SerializedProfile
-from adofai.models import GameProfile
 
 query_endpoints = APIRouter()  # 实际上是两类 Vanilla API 的整合，所以前缀不固定
 
 
 @query_endpoints.get("/sessionserver/session/minecraft/profile/{uuid}")
 async def from_uuid(rsp: Response,
-                    result: Annotated[Optional[GameProfile], Depends(handlers.query.from_uuid)],
+                    result: Annotated[Optional[FulfilledGameProfile], Depends(handlers.query.from_uuid)],
                     sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)],
                     unsigned: bool = True) -> SerializedProfile | None:
     """从UUID查询单个玩家"""
@@ -30,7 +30,7 @@ async def from_uuid(rsp: Response,
 
 @query_endpoints.post("/api/profiles/minecraft")
 async def from_name_batch(result: Annotated[
-    list[GameProfile], Depends(handlers.query.from_name_batch)
+    list[PartialGameProfile], Depends(handlers.query.from_name_batch)
 ]) -> list[SerializedProfile]:
     """从用户名批量查询用户的UUID"""
     return [i.serialize("minimum") for i in result]
