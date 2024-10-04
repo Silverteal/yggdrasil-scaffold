@@ -15,5 +15,5 @@ root_endpoints = APIRouter()
 @root_endpoints.get("/")
 async def home(metadata: Annotated[MetaData, Depends(handlers.root.home)],
                sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)]) -> dict[str, Any]:
-    """处理主页面源数据清单"""
+    """处理主页面元数据清单"""
     return jsonable_encoder(metadata) | {"signaturePublickey": sign_key.public_key().export_key().decode()}

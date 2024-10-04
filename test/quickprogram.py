@@ -4,11 +4,12 @@ from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
-
 from adofai import ClientToken, GameName, UserId
-from adofai.models import PartialGameProfile, UserProfile, GameProfile
-from adofai.utils.profile import fake_token, offline_game_profile, parse_fake_token, prompt_game_profile
+from adofai.models import FulfilledGameProfile, GameProfile, PartialGameProfile, UserProfile
+from adofai.utils.profile import fake_token, offline_game_profile, parse_fake_token, prompt_game_profile, \
+    random_game_profile
 from adofai.utils.uuid import offline_uuid, uuid_to_str
+
 from yggdrasil import fastapi_instance
 from yggdrasil.handlers import register
 from yggdrasil.handlers.proto import AbstractHandlerRoot, AbstractHandlerSession, AbstractHandlerUser
@@ -97,8 +98,9 @@ class SessionHandler(AbstractHandlerSession):
         return True
 
     @override
-    async def has_joined(self, *, username: str, serverId: str, ip: Optional[str] = None) -> GameProfile | None:
-        return offline_game_profile(GameName(username))
+    async def has_joined(self, *, username: GameName, serverId: str,
+                         ip: Optional[str] = None) -> FulfilledGameProfile | None:
+        return FulfilledGameProfile(offline_game_profile(GameName(username)))
 
 
 fastapi_instance = fastapi_instance  # avoid gc

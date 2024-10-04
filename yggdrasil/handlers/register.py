@@ -26,8 +26,8 @@ def session(cls: Type[AbstractHandlerSession], /):
 def query(cls: Type[AbstractHandlerQuery], /):
     """注册查询API处理程序"""
     inst = cls()
-    fastapi_instance.dependency_overrides[handlers.query.from_uuid] = inst.from_uuid
-    fastapi_instance.dependency_overrides[handlers.query.from_name_batch] = inst.from_name_batch
+    fastapi_instance.dependency_overrides[handlers.query.query_by_uuid] = inst.query_by_uuid
+    fastapi_instance.dependency_overrides[handlers.query.query_by_names] = inst.query_by_names
 
 
 def profile(cls: Type[AbstractHandlerProfile], /):

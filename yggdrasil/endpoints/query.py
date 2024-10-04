@@ -13,10 +13,10 @@ query_endpoints = APIRouter()  # 实际上是两类 Vanilla API 的整合，所�
 
 
 @query_endpoints.get("/sessionserver/session/minecraft/profile/{uuid}")
-async def from_uuid(rsp: Response,
-                    result: Annotated[Optional[FulfilledGameProfile], Depends(handlers.query.from_uuid)],
-                    sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)],
-                    unsigned: bool = True) -> SerializedProfile | None:
+async def query_by_uuid(rsp: Response,
+                        result: Annotated[Optional[FulfilledGameProfile], Depends(handlers.query.query_by_uuid)],
+                        sign_key: Annotated[RsaKey, Depends(handlers.root.sign_key)],
+                        unsigned: bool = True) -> SerializedProfile | None:
     """从UUID查询单个玩家"""
     if result is not None:
         if unsigned:
@@ -29,8 +29,8 @@ async def from_uuid(rsp: Response,
 
 
 @query_endpoints.post("/api/profiles/minecraft")
-async def from_name_batch(result: Annotated[
-    list[PartialGameProfile], Depends(handlers.query.from_name_batch)
+async def query_by_names(result: Annotated[
+    list[PartialGameProfile], Depends(handlers.query.query_by_names)
 ]) -> list[SerializedProfile]:
     """从用户名批量查询用户的UUID"""
     return [i.serialize("minimum") for i in result]

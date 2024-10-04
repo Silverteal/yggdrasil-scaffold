@@ -5,11 +5,11 @@ from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
-
-from adofai import AccessToken, GameId
-from adofai.models import GameProfile
+from adofai import AccessToken, GameId, GameName
+from adofai.models import FulfilledGameProfile, GameProfile, PartialGameProfile
 from adofai.utils.profile import random_game_profile, random_user_profile
 from adofai.utils.uuid import uuid_to_str
+
 from yggdrasil import fastapi_instance
 from yggdrasil.exceptions import YggdrasilException
 from yggdrasil.handlers import register
@@ -43,12 +43,12 @@ class PseudoHandlerProfile(AbstractHandlerProfile):
 @register.query
 class PseudoHandlerQuery(AbstractHandlerQuery):
     @override
-    async def from_uuid(self, *, uuid: GameId) -> GameProfile | None:
-        return random_game_profile()
+    async def query_by_uuid(self, *, uuid: GameId) -> FulfilledGameProfile | None:
+        return FulfilledGameProfile(random_game_profile())
 
     @override
-    async def from_name_batch(self, *, names: list[str]) -> list[GameProfile]:
-        return [random_game_profile() for _ in names]
+    async def query_by_names(self, *, names: list[str]) -> list[PartialGameProfile]:
+        return [PartialGameProfile(random_game_profile()) for _ in names]
 
 
 @register.root
@@ -73,9 +73,10 @@ class PseudoHandlerSession(AbstractHandlerSession):
             return False
 
     @override
-    async def has_joined(self, *, username: str, serverId: str, ip: Optional[str] = None) -> GameProfile | None:
+    async def has_joined(self, *, username: GameName, serverId: str,
+                         ip: Optional[str] = None) -> FulfilledGameProfile | None:
         if ip:
-            return random_game_profile()
+            return FulfilledGameProfile(random_game_profile())
         else:
             return None
 

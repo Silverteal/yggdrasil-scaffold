@@ -3,20 +3,19 @@
 __all__ = ["AbstractHandlerProfile", "AbstractHandlerQuery", "AbstractHandlerRoot",
            "AbstractHandlerSession", "AbstractHandlerUser"]
 
-from abc import ABC
-from typing import Literal, Optional
+from typing import Literal, Optional, Protocol
 
 from Crypto.PublicKey.RSA import RsaKey
+from adofai import GameId, GameName
+from adofai.models import FulfilledGameProfile, PartialGameProfile
 
-from adofai import GameId
-from adofai.models import GameProfile
 from yggdrasil.models.root import *
 from yggdrasil.models.session import *
 from yggdrasil.models.user import *
 from yggdrasil.utils.context import AuthorizationHeader, ClientIP, UploadTexture
 
 
-class AbstractHandlerUser(ABC):
+class AbstractHandlerUser(Protocol):
     """用户端点处理程序抽象基类"""
 
     async def login(self, *, form: LoginRequest) -> UserEndpointsResponse | None:
@@ -101,7 +100,7 @@ class AbstractHandlerUser(ABC):
         raise NotImplementedError
 
 
-class AbstractHandlerSession(ABC):
+class AbstractHandlerSession(Protocol):
     """用户端点处理程序抽象基类"""
 
     async def join(self, *, form: JoinRequest, ip: ClientIP) -> bool:
@@ -124,7 +123,8 @@ class AbstractHandlerSession(ABC):
         """
         raise NotImplementedError
 
-    async def has_joined(self, *, username: str, serverId: str, ip: Optional[str] = None) -> GameProfile | None:
+    async def has_joined(self, *, username: GameName, serverId: str,
+                         ip: Optional[str] = None) -> FulfilledGameProfile | None:
         """检查客户端会话的有效性，即数据库中是否存在该 serverId 的记录，且信息正确。
 
         username 需要与 serverId 所对应令牌所绑定的玩家名相同。
@@ -139,10 +139,10 @@ class AbstractHandlerSession(ABC):
         raise NotImplementedError
 
 
-class AbstractHandlerQuery(ABC):
+class AbstractHandlerQuery(Protocol):
     """查询端点处理程序抽象基类"""
 
-    async def from_uuid(self, *, uuid: GameId) -> GameProfile | None:
+    async def query_by_uuid(self, *, uuid: GameId) -> FulfilledGameProfile | None:
         """查询指定玩家档案的完整信息（包含材质和属性）。
 
         :param uuid: 玩家 UUID（GameId，也就是 UUID 对象）
@@ -150,7 +150,7 @@ class AbstractHandlerQuery(ABC):
         """
         raise NotImplementedError
 
-    async def from_name_batch(self, *, names: list[str]) -> list[GameProfile]:
+    async def query_by_names(self, *, names: list[GameName]) -> list[PartialGameProfile]:
         """批量查询玩家名所对应的玩家档案。
 
         服务端查询各个玩家名所对应的玩家档案信息，并将其包含在响应中。不存在的玩家档案不需要包含。
@@ -164,7 +164,7 @@ class AbstractHandlerQuery(ABC):
         raise NotImplementedError
 
 
-class AbstractHandlerProfile(ABC):
+class AbstractHandlerProfile(Protocol):
     """材质管理端点处理程序抽象基类"""
 
     async def upload(self, *, accessToken: AuthorizationHeader, uuid: GameId,
@@ -205,7 +205,7 @@ class AbstractHandlerProfile(ABC):
         raise NotImplementedError
 
 
-class AbstractHandlerRoot(ABC):
+class AbstractHandlerRoot(Protocol):
     """元数据端点处理程序抽象基类"""
 
     async def home(self) -> MetaData:
